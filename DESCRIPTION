@@ -1,15 +1,32 @@
 Package: PaySelectR
 Type: Package
-Title: PaySelectR: Pakiet R do wspomagania wyboru optymalnego systemu płatności online na podstawie opinie ekspertów.
+Title: Wielokryterialna Analiza Decyzyjna w Środowisku Rozmytym z BWM
 Version: 0.1.0
-Author: Zuzanna Moskała
-Maintainer: Zuzanna Moskała <zuzanna.moskala@student.uj.edu.pl>
-Description: PaySelectR: Pakiet R do wspomagania wyboru optymalnego systemu płatności online z wykorzystaniem metod Fuzzy VIKOR, Fuzzy TOPSISLinear i Teorii Dominacji.
-License: MIT + file LICENSE
+Author: c(
+    person(
+      "Zuzanna", "Moskała",
+      email = "zuzanna.moskala@student.uj.edu.pl",
+      role = c("aut", "cre")
+    )
+  )
+Maintainer: Twoje Imię Nazwisko <twoj.email@student.uj.edu.pl>
+Description: Pakiet implementuje metody MCDA (TOPSIS, VIKOR, WASPAS) w środowisku
+    rozmytym (Fuzzy Logic). Zawiera moduł automatycznego przetwarzania danych ankietowych
+    na liczby rozmyte oraz solver dla metody Best-Worst Method (BWM) do wyznaczania wag kryteriów.
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.3
 Imports:
-    FuzzyMCDM (>= 1.1),
+    Rglpk,
     ggplot2,
-    ggrepel
+    ggrepel,
+    RankAggreg,
+    stats
+Suggests:
+    knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: knitr
+Depends:
+    R (>= 3.5)
