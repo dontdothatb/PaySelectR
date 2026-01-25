@@ -1,0 +1,111 @@
+---
+output: github_document
+---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# PaySelectR
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+**PaySelectR** to pakiet języka R przeznaczony do wspomagania decyzji (MCDA) przy wyborze systemów płatności. Pakiet łączy zaawansowane metody matematyczne z logiką rozmytą, pozwalając na obiektywną ocenę operatorów płatności na podstawie wielu kryteriów.
+
+## Funkcje pakietu
+
+- **Przygotowanie danych rozmytych** z surowych danych numerycznych
+- **Fuzzy MCDA**: Implementacja metod TOPSIS, VIKOR oraz WASPAS w wariancie rozmytym (TFN).
+- **Best-Worst Method (BWM)**: Obliczanie wag kryteriów na podstawie profesjonalnych porównań eksperckich.
+- **Meta-Ranking**: Agregacja wyników z wielu metod w jeden stabilny ranking konsensusu.
+- **Wizualizacja S3**: Intuicyjne mapy strategiczne i wykresy korelacji.
+
+## Instalacja
+
+Możesz zainstalować wersję deweloperską z GitHub:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("dontdothatb/PaySelectR")
+```
+
+## Szybki Start
+
+Oto podstawowy przykład użycia pakietu z wykorzystaniem wbudowanych danych.
+```{r example}
+library(PaySelectR)
+
+# 1. Wczytaj dane
+data("pay_select_dane_surowe")
+head(pay_select_dane_surowe)
+
+# 2. Przygotuj macierz rozmytą
+skladnia <- "
+  Koszty_Finansowe =~ prowizje; 
+  Latwosc_Techniczna =~ integracja_latwosc + implementacja_latwosc;
+  Jakosc_i_Zasieg =~ szybkosc_platnosci + bezpieczenstwo + obsluga_klienta + zasieg_miedzynarodowy + akceptacja_transakcji
+"
+
+macierz <- przygotuj_dane_mcda(
+  dane = pay_select_dane_surowe, 
+  skladnia = skladnia, 
+  kolumna_alternatyw = "Alternatywa" 
+)
+
+# 3. Oblicz ranking metodą Fuzzy VIKOR z wagami BWM
+wynik_vikor <- rozmyty_vikor(
+  macierz, 
+  typy_kryteriow = c("min", "max", "max"), 
+  bwm_najlepsze = c(8, 3, 1),
+  bwm_najgorsze = c(1, 4, 8)
+)
+
+# 4. Wyświetl wynik 
+print(wynik_vikor$wyniki)
+
+```
+
+## Wizualizacja
+
+Pakiet oferuje profesjonalne mapy decyzyjne:
+```{r visualization, fig.width=7, fig.height=5}
+# Wizualizacja wyników metody VIKOR (Mapa kompromisu)
+plot(wynik_vikor)
+```
+
+## Meta-ranking
+
+Agreguj wyniki z wielu metod, aby uzyskać robust ranking konsensusu:
+```{r meta}
+meta <- rozmyty_meta_ranking(
+  macierz,
+  typy_kryteriow = c("min", "max", "max"),
+  bwm_najlepsze = c(8, 3, 1),
+  bwm_najgorsze = c(1, 4, 8)
+)
+
+# Pokaż Top 3 rekomendowane systemy płatności
+head(meta$porownanie[order(meta$porownanie$Meta_Agregacja), ], 3)
+```
+
+## Dokumentacja
+
+Więcej informacji i szczegółowych przykładów znajdziesz w:
+
+- **Vignette**: `vignette("poradnik_mcda", package = "PaySelectR")`
+- **Pomoc dla funkcji**: `?rozmyty_vikor`, `?rozmyty_topsis`, `?rozmyty_meta_ranking`
+
+## Autorzy
+
+- Zuzanna Moskała
+
+## Licencja
+
+GPL-3

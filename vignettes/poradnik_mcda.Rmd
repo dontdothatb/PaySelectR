@@ -1,0 +1,121 @@
+---
+title: "Pełny proces analizy: Od danych do rankingu"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pełny proces analizy: Od danych do rankingu}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(PaySelectR)
+library(ggplot2)
+```
+
+## 1. Wczytanie danych
+```{r}
+data("pay_select_dane_surowe")
+head(pay_select_dane_surowe)
+```
+
+## 2. Definicja modelu (Składnia)
+
+Definiujemy, które kolumny z ramki danych wchodzą w skład poszczególnych kryteriów.
+```{r}
+skladnia_modelu <- "
+  Koszty_Finansowe =~ prowizje; 
+  Latwosc_Techniczna =~ integracja_latwosc + implementacja_latwosc;
+  Jakosc_i_Zasieg =~ szybkosc_platnosci + bezpieczenstwo + obsluga_klienta + zasieg_miedzynarodowy + akceptacja_transakcji
+"
+```
+
+## 3. Przetwarzanie i Rozmywanie danych
+Funkcja przygotuj_dane_mcda automatycznie skaluje dane do przedziału 1-9 i zamienia je na liczby rozmyte (TFN).
+
+```{r}
+macierz_rozmyta <- przygotuj_dane_mcda(
+  dane = pay_select_dane_surowe, 
+  skladnia = skladnia_modelu, 
+  kolumna_alternatyw = "Alternatywa" 
+)
+
+# Podgląd fragmentu macierzy
+print(macierz_rozmyta[1:5, 1:6])
+
+```
+
+## 4. Wyznaczanie wag metodą BWM (Best-Worst Method)
+
+Zamiast zgadywać wagi, pytamy eksperta. Zakładamy, że:
+
+- Najlepsze kryterium: Jakosc_i_Zasieg (poz. 3 w macierzy)
+- Najgorsze kryterium: Koszty_Finansowe (poz. 1 w macierzy)
+```{r}
+# Kolejność kryteriów w macierzy: Koszty_Finansowe, Latwosc_Techniczna, Jakosc_i_Zasieg
+
+# Preferencja NAJLEPSZEGO (Jakosc_i_Zasieg) nad innymi (1-9):
+# Jakosc_i_Zasieg/Koszty_Finansowe=8, Jakosc_i_Zasieg/Latwosc_Techniczna=3, Jakosc_i_Zasieg/Jakosc_i_Zasieg=1
+bwm_best <- c(8, 3, 1) 
+
+# Preferencja innych nad NAJGORSZYM (Koszty_Finansowe) (1-9):
+# Koszty_Finansowe/Koszty_Finansowe=1, Latwosc_Techniczna/Koszty_Finansowe=4, Jakosc_i_Zasieg/Koszty_Finansowe=8
+bwm_worst <- c(1, 4, 8)
+```
+
+## 5. Analiza Decyzyjna (VIKOR, TOPSIS, WASPAS)
+Uruchamiamy metody. Pakiet automatycznie policzy wagi z parametrów BWM. Definiujemy typy kryteriów: min (koszt) lub max (korzyść).
+```{r}
+typy <- c("min", "max", "max")
+
+# Fuzzy VIKOR
+wynik_vikor <- rozmyty_vikor(
+  macierz_decyzyjna = macierz_rozmyta,
+  typy_kryteriow = typy,
+  bwm_najlepsze = bwm_best,
+  bwm_najgorsze = bwm_worst
+)
+
+# Fuzzy TOPSIS
+wynik_topsis <- rozmyty_topsis(
+  macierz_decyzyjna = macierz_rozmyta,
+  typy_kryteriow = typy,
+  bwm_najlepsze = bwm_best,
+  bwm_najgorsze = bwm_worst
+)
+
+# Wyniki tabelaryczne
+print(wynik_vikor$wyniki)
+print(wynik_topsis$wyniki)
+```
+
+## 6. Wizualizacja (Mapy Decyzyjne)
+Generujemy mapy strategiczne.
+```{r}
+plot(wynik_vikor)
+plot(wynik_topsis)
+```
+
+## 7. Meta-Ranking (Konsensus)
+Agregujemy wyniki wszystkich trzech metod (w tym WASPAS), aby uzyskać ostateczną decyzję.
+```{r}
+meta_wynik <- rozmyty_meta_ranking(
+  macierz_decyzyjna = macierz_rozmyta, 
+  typy_kryteriow = typy,
+  bwm_najlepsze = bwm_best, 
+  bwm_najgorsze = bwm_worst
+)
+
+# Tabela porównawcza
+knitr::kable(meta_wynik$porownanie, caption = "Porównanie rankingów i Konsensus")
+
+# Korelacje między metodami
+knitr::kable(round(meta_wynik$korelacje, 2), caption = "Macierz korelacji Spearmana")
+
+```
