@@ -83,3 +83,19 @@ tabela_apa.list <- function(x, tytul = "Meta-Ranking (Konsensus)") {
     note = c("Zestawienie rang uzyskanych różnymi metodami oraz rankingi konsensusu.")
   )
 }
+
+#' @export
+tabela_apa.rozmyty_multimoora_wynik <- function(x, tytul = "Wyniki MULTIMOORA") {
+  df <- x$wyniki[, c("Alternatywa", "RS_Ranking", "RP_Ranking", "FMF_Ranking", "Ranking_MM")]
+  names(df) <- c("Alternatywa", "Rank Ratio", "Rank Ref.Point", "Rank Mult.Form", "MULTIMOORA")
+  rempsyc::nice_table(df, title = c("Tabela", tytul))
+}
+
+#' @export
+tabela_apa.rozmyty_promethee_wynik <- function(x, tytul = "Wyniki PROMETHEE II") {
+  df <- x$wyniki
+  df$Phi_Net <- round(df$Phi_Net, 3)
+  names(df) <- c("Alternatywa", "Phi+ (Leaving)", "Phi- (Entering)", "Phi Net", "Ranking")
+  rempsyc::nice_table(df, title = c("Tabela", tytul))
+}
+

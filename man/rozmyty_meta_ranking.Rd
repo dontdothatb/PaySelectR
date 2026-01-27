@@ -2,37 +2,34 @@
 % Please edit documentation in R/meta_ranking.R
 \name{rozmyty_meta_ranking}
 \alias{rozmyty_meta_ranking}
-\title{Rozmyty Meta-Ranking}
+\title{Rozmyty Meta-Ranking (5 Metod)}
 \usage{
 rozmyty_meta_ranking(
-  macierz_decyzyjna,
-  typy_kryteriow,
-  wagi = NULL,
-  bwm_najlepsze = NULL,
-  bwm_najgorsze = NULL,
+  decision_mat,
+  criteria_types,
+  weights = NULL,
+  preference_params = NULL,
+  bwm_best = NULL,
+  bwm_worst = NULL,
   lambda = 0.5,
   v = 0.5
 )
 }
 \arguments{
-\item{macierz_decyzyjna}{Rozmyta macierz danych.}
+\item{decision_mat}{Rozmyta macierz decyzyjna.}
 
-\item{typy_kryteriow}{Wektor typów ("min", "max").}
+\item{criteria_types}{Wektor typów kryteriów ("min", "max").}
 
-\item{wagi}{(Opcjonalnie) Wagi kryteriów.}
+\item{weights}{Wektor wag (opcjonalny).}
 
-\item{bwm_najlepsze}{(Opcjonalnie) Wektor BWM Best-to-Others.}
+\item{preference_params}{Ramka parametrów dla PROMETHEE (opcjonalna).}
 
-\item{bwm_najgorsze}{(Opcjonalnie) Wektor BWM Others-to-Worst.}
+\item{bwm_best, bwm_worst}{Parametry BWM.}
 
-\item{lambda}{Parametr dla WASPAS (domyślnie 0.5).}
+\item{lambda}{Parametr WASPAS.}
 
-\item{v}{Parametr dla VIKOR (domyślnie 0.5).}
-}
-\value{
-Lista zawierająca ramkę danych z porównaniem rankingów oraz macierz korelacji.
+\item{v}{Parametr VIKOR.}
 }
 \description{
-Agreguje wyniki z metod Fuzzy VIKOR, TOPSIS i WASPAS, aby stworzyć
-jeden, robustny ranking konsensusu.
+Agreguje wyniki: VIKOR, TOPSIS, WASPAS, MULTIMOORA, PROMETHEE.
 }

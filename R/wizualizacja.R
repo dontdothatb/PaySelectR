@@ -159,3 +159,34 @@ plot.rozmyty_waspas_wynik <- function(x, ...) {
 
 # Fix dla ostrzeżeń R CMD check o zmiennych globalnych w ggplot2
 utils::globalVariables(c("Def_S", "Def_R", "D_plus", "D_minus", "Wynik", "WSM", "WPM", "Wydajnosc", "Rozmiar", "OdlegloscWizualna", "Spojnosc", "Alternatywa"))
+
+#' Mapa Strategiczna MULTIMOORA
+#' @export
+plot.rozmyty_multimoora_wynik <- function(x, ...) {
+  df <- x$wyniki
+  df$Sila <- (max(df$Ranking_MM) - df$Ranking_MM + 1)^2
+
+  ggplot(df, aes(x = RS_Wynik, y = RP_Wynik)) +
+    annotate("rect", xmin = median(df$RS_Wynik), xmax = Inf, ymin = -Inf, ymax = median(df$RP_Wynik),
+             fill = "#E8F5E9", alpha = 0.5) +
+    geom_point(aes(size = Sila, fill = as.factor(Ranking_MM)), shape = 21, color = "black") +
+    geom_text_repel(aes(label = paste0("Alt ", Alternatywa))) +
+    .motyw_mcda() +
+    labs(title = "Mapa MULTIMOORA", x = "System Ilorazowy (Max)", y = "Punkt Odniesienia (Min)")
+}
+
+#' Wykres Przepływów PROMETHEE II
+#' @export
+plot.rozmyty_promethee_wynik <- function(x, ...) {
+  df <- x$wyniki
+  df <- df[order(df$Phi_Net), ]
+  df$Alt <- factor(paste0("Alt ", df$Alternatywa), levels = paste0("Alt ", df$Alternatywa))
+
+  ggplot(df, aes(x = Alt, y = Phi_Net)) +
+    geom_segment(aes(xend = Alt, y = 0, yend = Phi_Net), color = "grey") +
+    geom_point(aes(fill = Phi_Net), size = 5, shape = 21) +
+    coord_flip() +
+    .motyw_mcda() +
+    labs(title = "PROMETHEE II Ranking", y = "Przepływ Netto (Phi)")
+}
+
