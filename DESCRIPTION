@@ -22,7 +22,9 @@ Imports:
     ggplot2,
     ggrepel,
     RankAggreg,
-    stats
+    stats,
+    rempsyc,
+    flextable
 Suggests:
     knitr,
     rmarkdown,
