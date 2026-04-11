@@ -5,7 +5,7 @@
 .motyw_mcda <- function() {
   list(
     theme_light(base_size = 12),
-    scale_fill_gradient(low = "#90A4AE", high = "#2E7D32"), # Od szaro-niebieskiego do zieleni
+    scale_fill_gradient(low = "#90A4AE", high = "#2E7D32"),
     scale_size_continuous(range = c(4, 16)),
     theme(
       plot.title = element_text(face = "bold", size = 16),
@@ -31,34 +31,26 @@
 plot.rozmyty_vikor_wynik <- function(x, ...) {
   df <- x$wyniki
 
-  # 1. Matematyka wykresu: Odwracamy S (żeby im więcej tym lepiej na osi X)
   s_min <- min(df$Def_S); s_max <- max(df$Def_S)
-  # Normalizacja do 0-100
   df$Wydajnosc <- ((s_max - df$Def_S) / (s_max - s_min)) * 100
 
-  # Wielkość bąbla (odwrócone Q - im mniejsze Q tym większy bąbel, bo to lżejszy kompromis)
   q_inv <- 1 - ((df$Def_Q - min(df$Def_Q)) / (max(df$Def_Q) - min(df$Def_Q)))
-  df$Rozmiar <- (q_inv + 0.1)^3 # Potęgowanie dla lepszego kontrastu wizualnego
+  df$Rozmiar <- (q_inv + 0.1)^3
 
-  # Środki do wyznaczenia ćwiartek
   srodek_perf <- median(df$Wydajnosc, na.rm=TRUE)
   srodek_ryzyko <- median(df$Def_R, na.rm=TRUE)
 
   ggplot(df, aes(x = Wydajnosc, y = Def_R)) +
-    # Tło dla strefy Lidera (Prawa dolna ćwiartka: Duża wydajność, Małe ryzyko)
     annotate("rect", xmin=srodek_perf, xmax=Inf, ymin=-Inf, ymax=srodek_ryzyko, fill="#E8F5E9", alpha=0.5) +
 
-    # Linie podziału
     geom_vline(xintercept = srodek_perf, linetype = "dashed", color = "grey50") +
     geom_hline(yintercept = srodek_ryzyko, linetype = "dashed", color = "grey50") +
 
-    # Etykiety stref
     annotate("text", x = max(df$Wydajnosc), y = min(df$Def_R), label = "STABILNY LIDER\n(Wysoka Efekt., Niskie Ryzyko)",
              hjust=1, vjust=0, size=3, fontface="bold.italic", color="darkgreen") +
     annotate("text", x = min(df$Wydajnosc), y = max(df$Def_R), label = "UNIKAĆ\n(Niska Efekt., Wysokie Ryzyko)",
              hjust=0, vjust=1, size=3, fontface="italic", color="#B71C1C") +
 
-    # Bąble
     geom_point(aes(size = Rozmiar, fill = Wydajnosc), shape = 21, color = "black", alpha = 0.8) +
     geom_text_repel(aes(label = paste0("Alt ", Alternatywa)), box.padding = 0.5) +
 
@@ -86,29 +78,23 @@ plot.rozmyty_vikor_wynik <- function(x, ...) {
 #' @export
 plot.rozmyty_topsis_wynik <- function(x, ...) {
   df <- x$wyniki
-  df$Rozmiar <- (df$Wynik)^4 # Podbicie różnic w wielkości
+  df$Rozmiar <- (df$Wynik)^4
 
-  # Punkt Idealny na wykresie (Target)
   cel_x <- max(df$D_minus) * 1.02
   cel_y <- min(df$D_plus) * 0.98
 
-  # Obliczenie wizualnej odległości euklidesowej na wykresie
   df$OdlegloscWizualna <- sqrt((df$D_minus - cel_x)^2 + (df$D_plus - cel_y)^2)
 
   ggplot(df, aes(x = D_minus, y = D_plus)) +
-    # Linie łączące z punktem idealnym
     geom_segment(aes(xend = cel_x, yend = cel_y), linetype = "dotted", color = "grey50") +
 
-    # Etykieta odległości na linii
     geom_label(aes(x = (D_minus + cel_x) / 2, y = (D_plus + cel_y) / 2,
                    label = sprintf("%.3f", OdlegloscWizualna)),
                size = 2.5, color = "grey30", label.size = 0, alpha = 0.7) +
 
-    # Bąble
     geom_point(aes(size = Rozmiar, fill = Wynik), shape = 21, color = "black", alpha = 0.9) +
     geom_text_repel(aes(label = paste0("Alt ", Alternatywa)), box.padding = 0.6) +
 
-    # Marker Idealu (Złoty romb)
     annotate("point", x = cel_x, y = cel_y, shape=18, size=6, color="#FFD700") +
     annotate("text", x = cel_x, y = cel_y, label="IDEAŁ", vjust=2, size=3.5, fontface="bold") +
 
@@ -134,12 +120,10 @@ plot.rozmyty_topsis_wynik <- function(x, ...) {
 plot.rozmyty_waspas_wynik <- function(x, ...) {
   df <- x$wyniki
 
-  # Obliczenie spójności (im mniejsza różnica między WSM a WPM tym lepiej)
   df$Odchylenie <- abs(df$WSM - df$WPM)
   df$Spojnosc <- 1 - (df$Odchylenie / max(df$Odchylenie))
 
   ggplot(df, aes(x = WSM, y = WPM)) +
-    # Pasmo spójności
     geom_ribbon(aes(ymin = WSM - 0.05, ymax = WSM + 0.05), fill = "grey90", alpha = 0.5) +
     geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "grey50") +
 
@@ -157,7 +141,6 @@ plot.rozmyty_waspas_wynik <- function(x, ...) {
     .motyw_mcda()
 }
 
-# Fix dla ostrzeżeń R CMD check o zmiennych globalnych w ggplot2
 utils::globalVariables(c("Def_S", "Def_R", "D_plus", "D_minus", "Wynik", "WSM", "WPM", "Wydajnosc", "Rozmiar", "OdlegloscWizualna", "Spojnosc", "Alternatywa"))
 
 #' Mapa Strategiczna MULTIMOORA
@@ -190,3 +173,98 @@ plot.rozmyty_promethee_wynik <- function(x, ...) {
     labs(title = "PROMETHEE II Ranking", y = "Przepływ Netto (Phi)")
 }
 
+#' @title Generowanie Tabeli APA
+#' @description
+#' Funkcja przekształca wyniki analizy MCDA (TOPSIS, VIKOR, WASPAS, Meta-Ranking)
+#' w sformatowaną tabelę zgodną ze standardem APA, gotową do publikacji w Wordzie.
+#'
+#' @param x Obiekt wynikowy z funkcji pakietu (np. `rozmyty_topsis_wynik`).
+#' @param tytul Opcjonalny tytuł tabeli.
+#' @return Obiekt klasy `flextable` gotowy do druku lub zapisu do Worda.
+#' @importFrom rempsyc nice_table
+#' @importFrom flextable autofit save_as_docx
+#' @export
+tabela_apa <- function(x, tytul = NULL) {
+  UseMethod("tabela_apa")
+}
+
+#' @export
+tabela_apa.rozmyty_topsis_wynik <- function(x, tytul = "Wyniki metody Fuzzy TOPSIS") {
+  df <- x$wyniki
+
+  names(df) <- c("Alternatywa", "D+ (Do Idealu)", "D- (Od Anty)", "Wynik (CC)", "Ranking")
+
+  df$`D+ (Do Idealu)` <- round(df$`D+ (Do Idealu)`, 3)
+  df$`D- (Od Anty)`   <- round(df$`D- (Od Anty)`, 3)
+  df$`Wynik (CC)`     <- round(df$`Wynik (CC)`, 4)
+
+  rempsyc::nice_table(
+    df,
+    title = c("Tabela 1", tytul),
+    note = c("Uwaga. CC - Coefficient of Closeness. Im wyższa wartość, tym lepsza alternatywa.")
+  )
+}
+
+#' @export
+tabela_apa.rozmyty_vikor_wynik <- function(x, tytul = "Wyniki metody Fuzzy VIKOR") {
+  df <- x$wyniki
+
+  names(df) <- c("Alternatywa", "S (Grupa)", "R (Zal)", "Q (Kompromis)", "Ranking")
+
+  df$`S (Grupa)`     <- round(df$`S (Grupa)`, 3)
+  df$`R (Zal)`       <- round(df$`R (Zal)`, 3)
+  df$`Q (Kompromis)` <- round(df$`Q (Kompromis)`, 4)
+
+  rempsyc::nice_table(
+    df,
+    title = c("Tabela 2", tytul),
+    note = c("Uwaga. S: użyteczność grupy, R: indywidualny żal, Q: indeks kompromisu (im mniej tym lepiej).")
+  )
+}
+
+#' @export
+tabela_apa.rozmyty_waspas_wynik <- function(x, tytul = "Wyniki metody Fuzzy WASPAS") {
+  df <- x$wyniki
+
+  names(df) <- c("Alternatywa", "WSM (Suma)", "WPM (Iloczyn)", "Q (Laczny)", "Ranking")
+
+  df$`WSM (Suma)`    <- round(df$`WSM (Suma)`, 3)
+  df$`WPM (Iloczyn)` <- round(df$`WPM (Iloczyn)`, 3)
+  df$`Q (Laczny)`    <- round(df$`Q (Laczny)`, 4)
+
+  rempsyc::nice_table(
+    df,
+    title = c("Tabela 3", tytul),
+    note = c("Uwaga. WSM: Weighted Sum Model, WPM: Weighted Product Model.")
+  )
+}
+
+#' @export
+tabela_apa.list <- function(x, tytul = "Meta-Ranking (Konsensus)") {
+  if(is.null(x$porownanie)) stop("To nie jest obiekt meta-rankingu.")
+
+  df <- x$porownanie
+
+  names(df) <- gsub("_", " ", names(df))
+
+  rempsyc::nice_table(
+    df,
+    title = c("Tabela 4", tytul),
+    note = c("Zestawienie rang uzyskanych różnymi metodami oraz rankingi konsensusu.")
+  )
+}
+
+#' @export
+tabela_apa.rozmyty_multimoora_wynik <- function(x, tytul = "Wyniki MULTIMOORA") {
+  df <- x$wyniki[, c("Alternatywa", "RS_Ranking", "RP_Ranking", "FMF_Ranking", "Ranking_MM")]
+  names(df) <- c("Alternatywa", "Rank Ratio", "Rank Ref.Point", "Rank Mult.Form", "MULTIMOORA")
+  rempsyc::nice_table(df, title = c("Tabela", tytul))
+}
+
+#' @export
+tabela_apa.rozmyty_promethee_wynik <- function(x, tytul = "Wyniki PROMETHEE II") {
+  df <- x$wyniki
+  df$Phi_Net <- round(df$Phi_Net, 3)
+  names(df) <- c("Alternatywa", "Phi+ (Leaving)", "Phi- (Entering)", "Phi Net", "Ranking")
+  rempsyc::nice_table(df, title = c("Tabela", tytul))
+}

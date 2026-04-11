@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 ## Funkcje pakietu
 
 - **Przygotowanie danych rozmytych** z surowych danych numerycznych
-- **Fuzzy MCDA**: Implementacja metod TOPSIS, VIKOR oraz WASPAS w wariancie rozmytym (TFN).
+- **Fuzzy MCDA**: Implementacja metod TOPSIS, VIKOR, WASPAS, MULTIMOORA oraz PROMETHEE w wariancie rozmytym (TFN).
 - **Best-Worst Method (BWM)**: Obliczanie wag kryteriów na podstawie profesjonalnych porównań eksperckich.
 - **Meta-Ranking**: Agregacja wyników z wielu metod w jeden stabilny ranking konsensusu.
 - **Wizualizacja S3**: Intuicyjne mapy strategiczne i wykresy korelacji.
@@ -38,7 +38,7 @@ devtools::install_github("dontdothatb/PaySelectR")
 
 ## Szybki Start
 
-Oto podstawowy przykład użycia pakietu z wykorzystaniem wbudowanych danych.
+Oto podstawowy przykład użycia pakietu przy użyciu metody Fuzzy TOPSIS.
 ```{r example}
 library(PaySelectR)
 
@@ -59,40 +59,93 @@ macierz <- przygotuj_dane_mcda(
   kolumna_alternatyw = "Alternatywa" 
 )
 
-# 3. Oblicz ranking metodą Fuzzy VIKOR z wagami BWM
-wynik_vikor <- rozmyty_vikor(
-  macierz, 
+# 3. Wyznacz wagi metodą Entropii
+wagi_ent <- oblicz_wagi_entropii(macierz)
+
+# 4. Oblicz ranking metodą Fuzzy TOPSIS
+res_topsis <- rozmyty_topsis(
+  macierz_decyzyjna = macierz, 
   typy_kryteriow = c("min", "max", "max"), 
-  bwm_najlepsze = c(8, 3, 1),
-  bwm_najgorsze = c(1, 4, 8)
+  wagi = wagi_ent
 )
 
-# 4. Wyświetl wynik 
-print(wynik_vikor$wyniki)
+# 5. Wyświetl wyniki rankingu
+summary(res_topsis)
+
 
 ```
 
 ## Wizualizacja
 
-Pakiet oferuje profesjonalne mapy decyzyjne:
-```{r visualization, fig.width=7, fig.height=5}
-# Wizualizacja wyników metody VIKOR (Mapa kompromisu)
-plot(wynik_vikor)
+Pakiet `PaySelectR` kładzie duży nacisk na czytelną prezentację wyników. Dzięki integracji z systemem klas S3, generowanie profesjonalnych wykresów sprowadza się do jednej komendy `plot()`.
+
+## Metoda Wiodąca: Fuzzy TOPSIS
+ W procesie wyboru systemu płatności kluczowe jest znalezienie rozwiązania, które jest najbliższe "idealnemu" (najniższe koszty, najwyższe bezpieczeństwo). Metoda **TOPSIS** (Technique for Order of Preference by Similarity to Ideal Solution) mierzy dystans euklidesowy od teoretycznego wzorca doskonałości.
+
+W pakiecie `PaySelectR` metoda ta została zaimplementowana w logice rozmytej, co pozwala na uwzględnienie niepewności ocen eksperckich.
+
+```{r topsis_example, fig.width=7, fig.height=5}
+# Obliczenie rankingu metodą Fuzzy TOPSIS
+res_topsis <- rozmyty_topsis(
+  macierz_decyzyjna = macierz, 
+  typy_kryteriow = c("min", "max", "max"), 
+  wagi = wagi_ent
+)
+
+# Wykres rankingu TOPSIS - ocena bliskości do ideału
+plot(res_topsis)
+```
+
+### Eksport wyników do formatu naukowego (APA)
+
+W pakiecie zaimplementowano funkcję automatycznie formatującą wyniki zgodnie z wytycznymi APA, co ułatwia bezpośrednie kopiowanie tabel do prac naukowych.
+
+```{r tabela_apa_przyklad}
+
+tabela_apa(res_topsis)
+```
+
+## Alternatywne Metody Obliczeniowe
+
+Pakiet `PaySelectR` oferuje również inne algorytmy MCDA, co pozwala na porównanie wyników i wybór najbardziej stabilnego rozwiązania.
+
+Metoda VIKOR skupia się na znalezieniu rozwiązania najbliższego ideałowi, ale przy jednoczesnej minimalizacji indywidualnego "żalu" (najgorszego parametru). Jest to idealne podejście, gdy szukamy bramki płatniczej o najbardziej zrównoważonych parametrach.
+
+```{r vikor_example, fig.width=7, fig.height=5}
+# Obliczenie rankingu metodą Fuzzy VIKOR
+res_vikor <- rozmyty_vikor(
+  macierz_decyzyjna = macierz, 
+  typy_kryteriow = c("min", "max", "max"), 
+  wagi = wagi_ent
+)
+
+# Wykres rankingu VIKOR - mapa kompromisu
+plot(res_vikor)
 ```
 
 ## Meta-ranking
 
 Agreguj wyniki z wielu metod, aby uzyskać robust ranking konsensusu:
 ```{r meta}
-meta <- rozmyty_meta_ranking(
-  macierz,
+# Wywołanie głównej funkcji agregującej
+meta_wynik <- rozmyty_meta_ranking(
+  macierz_decyzyjna = macierz,
   typy_kryteriow = c("min", "max", "max"),
   bwm_najlepsze = c(8, 3, 1),
   bwm_najgorsze = c(1, 4, 8)
 )
 
-# Pokaż Top 3 rekomendowane systemy płatności
-head(meta$porownanie[order(meta$porownanie$Meta_Agregacja), ], 3)
+# Przygotowanie tabeli do wyświetlenia
+ranking_final <- meta_wynik$porownanie
+
+# Sortowanie według ostatecznej agregacji (Meta_Agregacja)
+ranking_top <- ranking_final[order(ranking_final$Meta_Agregacja), ]
+
+# Wyświetlenie tabeli w dokumencie
+knitr::kable(
+  head(ranking_top, 3), 
+  caption = "Tabela 1: Top 3 systemy płatności według rankingu konsensusu"
+)
 ```
 
 ## Dokumentacja

@@ -27,7 +27,6 @@
   indeks_najgorszego <- match(1, model$others_to_worst)
   najlepszy_nad_najgorszym <- model$best_to_others[indeks_najgorszego]
 
-  # Sprawdzenie idealnej spojnosci: a_bj * a_jw = a_bw
   list(
     jest_spojny = all(model$best_to_others * model$others_to_worst == najlepszy_nad_najgorszym),
     a_bw = najlepszy_nad_najgorszym
@@ -55,85 +54,68 @@
 #' @export
 oblicz_wagi_bwm <- function(nazwy_kryteriow, najlepsze_do_innych, inne_do_najgorszego) {
 
-  # 1. Walidacja i budowa modelu
   dane <- .waliduj_dane_bwm(najlepsze_do_innych, inne_do_najgorszego, nazwy_kryteriow)
   spojnosc <- .sprawdz_spojnosc(dane)
 
-  n_zmiennych <- length(najlepsze_do_innych) + 1 # Wagi (n) + zmienna ksi (1)
+  n_zmiennych <- length(najlepsze_do_innych) + 1
   indeks_ksi <- n_zmiennych
 
   # --- Budowanie macierzy ograniczen dla Programowania Liniowego ---
 
-  # Ograniczenie 1: Suma wag musi wynosic 1 (w1 + w2 + ... + wn = 1)
-  lhs_suma <- c(rep(1, n_zmiennych - 1), 0) # 0 przy ksi, bo ksi nie wchodzi do sumy wag
+  lhs_suma <- c(rep(1, n_zmiennych - 1), 0)
   ograniczenia <- list(
     list(lhs = lhs_suma, dir = "==", rhs = 1)
   )
 
-  # Ograniczenia wynikajace z porownan: |w_b - a_bj * w_j| <= ksi
-  # Przeksztalcamy wartosc bezwzgledna na dwie nierownosci liniowe
   indeks_najlepszego <- match(1, najlepsze_do_innych)
 
   for (j in seq_along(najlepsze_do_innych)) {
     if (j != indeks_najlepszego) {
-      # Rownanie A: w_b - a_bj * w_j - ksi <= 0
       lhs1 <- rep(0, n_zmiennych)
       lhs1[indeks_najlepszego] <- 1
       lhs1[j] <- -najlepsze_do_innych[j]
-      lhs1[indeks_ksi] <- -1 # odejmujemy ksi
-      ograniczenia <- .dodaj_ograniczenie(ograniczenia, list(lhs = lhs1, dir = "<=", rhs = 0))$ograniczenia
-
-      # Rownanie B: -w_b + a_bj * w_j - ksi <= 0
-      lhs2 <- lhs1 * -1
-      lhs2[indeks_ksi] <- -1 # ksi zawsze odejmujemy (zawsze dążymy do minimalizacji bledu)
-      ograniczenia <- .dodaj_ograniczenie(ograniczenia, list(lhs = lhs2, dir = "<=", rhs = 0))$ograniczenia
-    }
-  }
-
-  # Powtorzenie logiki dla wektora Inne-do-Najgorszego: |w_j - a_jw * w_w| <= ksi
-  indeks_najgorszego <- match(1, inne_do_najgorszego)
-
-  for (j in seq_along(inne_do_najgorszego)) {
-    if (j != indeks_najgorszego) {
-      # Rownanie A: w_j - a_jw * w_w - ksi <= 0
-      lhs1 <- rep(0, n_zmiennych)
-      lhs1[j] <- 1
-      lhs1[indeks_najgorszego] <- -inne_do_najgorszego[j]
       lhs1[indeks_ksi] <- -1
       ograniczenia <- .dodaj_ograniczenie(ograniczenia, list(lhs = lhs1, dir = "<=", rhs = 0))$ograniczenia
 
-      # Rownanie B: -w_j + a_jw * w_w - ksi <= 0
       lhs2 <- lhs1 * -1
       lhs2[indeks_ksi] <- -1
       ograniczenia <- .dodaj_ograniczenie(ograniczenia, list(lhs = lhs2, dir = "<=", rhs = 0))$ograniczenia
     }
   }
 
-  # 2. Konfiguracja Solvera (Rglpk)
-  # Zamiana listy ograniczen na macierz
+  indeks_najgorszego <- match(1, inne_do_najgorszego)
+
+  for (j in seq_along(inne_do_najgorszego)) {
+    if (j != indeks_najgorszego) {
+      lhs1 <- rep(0, n_zmiennych)
+      lhs1[j] <- 1
+      lhs1[indeks_najgorszego] <- -inne_do_najgorszego[j]
+      lhs1[indeks_ksi] <- -1
+      ograniczenia <- .dodaj_ograniczenie(ograniczenia, list(lhs = lhs1, dir = "<=", rhs = 0))$ograniczenia
+
+      lhs2 <- lhs1 * -1
+      lhs2[indeks_ksi] <- -1
+      ograniczenia <- .dodaj_ograniczenie(ograniczenia, list(lhs = lhs2, dir = "<=", rhs = 0))$ograniczenia
+    }
+  }
+
   macierz_lhs <- t(sapply(ograniczenia, function(x) x$lhs))
   wektor_dir <- sapply(ograniczenia, function(x) x$dir)
   wektor_rhs <- unlist(sapply(ograniczenia, function(x) x$rhs))
 
-  # Funkcja celu: Minimalizujemy tylko ksi (ostatnia zmienna)
   cel <- rep(0, n_zmiennych)
   cel[indeks_ksi] <- 1
 
-  # Rozwiazanie problemu
   wynik <- Rglpk::Rglpk_solve_LP(cel, macierz_lhs, wektor_dir, wektor_rhs, max = FALSE)
 
-  # 3. Przetwarzanie wynikow
   wagi <- wynik$solution[1:(n_zmiennych - 1)]
   wartosc_ksi <- wynik$solution[n_zmiennych]
 
-  # Tabela Indeksu Spójności (Consistency Index) dla skali 1-9 (Rezaei, 2015)
   tabela_ci <- c(0, 0.44, 1.0, 1.63, 2.30, 3.00, 3.73, 4.47, 5.23)
 
-  # Pobieramy wartosc a_bw (Najlepszy do Najgorszego)
   idx_bw <- as.integer(spojnosc$a_bw)
-  idx_bw <- ifelse(idx_bw > 9, 9, idx_bw) # Zabezpieczenie
+  idx_bw <- ifelse(idx_bw > 9, 9, idx_bw)
 
-  # Obliczenie Consistency Ratio (CR)
   cr <- wartosc_ksi / tabela_ci[idx_bw]
   if (idx_bw == 1) cr <- 0
 

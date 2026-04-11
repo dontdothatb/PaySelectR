@@ -35,7 +35,6 @@ rozmyty_promethee <- function(macierz_decyzyjna, parametry_preferencji, wagi = N
 
   finalne_wagi <- .pobierz_finalne_wagi(macierz_decyzyjna, wagi, bwm_kryteria, bwm_najlepsze, bwm_najgorsze)
 
-  # PROMETHEE wymaga ostrych (crisp), znormalizowanych wag
   n_kryt <- ncol(macierz_decyzyjna) / 3
   wagi_ostre <- numeric(n_kryt)
   for(j in 1:n_kryt) {
@@ -45,10 +44,7 @@ rozmyty_promethee <- function(macierz_decyzyjna, parametry_preferencji, wagi = N
   wagi_ostre <- wagi_ostre / sum(wagi_ostre)
 
   n_alt <- nrow(macierz_decyzyjna)
-  Pi_total <- matrix(0, n_alt, n_alt) # Zagregowana preferencja
-
-  # Pętla po kryteriach (na zdefuzzyfikowanych danych dla uproszczenia w tym przykładzie,
-  # lub na trójkach z logiką NEAT jeśli wybrano wersję zaawansowaną)
+  Pi_total <- matrix(0, n_alt, n_alt)
 
   for (j in 1:n_kryt) {
     typ <- as.character(parametry_preferencji[j, "Type"])
@@ -57,7 +53,6 @@ rozmyty_promethee <- function(macierz_decyzyjna, parametry_preferencji, wagi = N
     s <- as.numeric(parametry_preferencji[j, "s"])
     rola <- as.character(parametry_preferencji[j, "Role"])
 
-    # Dla uproszczenia edukacyjnego: używamy środków trójek (crisp inputs)
     idx_m <- (j-1)*3 + 2
     vals <- macierz_decyzyjna[, idx_m]
 
