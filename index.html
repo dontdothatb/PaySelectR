@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Szablon Dashboardu MCDA | Seminarium</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    html { scroll-behavior: smooth; }
+    .chart-box {
+      position: relative;
+      width: 100%;
+      height: 360px;
+      min-height: 300px;
+      max-height: 460px;
+    }
+    code, pre { font-variant-ligatures: none; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 selection:bg-sky-100 selection:text-sky-900">
+  <nav class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3">
+        <div class="flex h-9 w-9 items-center justify-center rounded bg-sky-700 font-bold text-white">PS</div>
+        <div>
+          <p class="text-sm font-bold uppercase tracking-wide text-slate-900">PAYSELECTR ANALYTICS</p>
+          <p class="text-xs text-slate-500">Wielokryterialne wspomaganie decyzji w eCommerce</p>
+        </div>
+      </div>
+      <div class="hidden items-center gap-5 text-sm font-medium text-slate-600 md:flex">
+        <a href="#problem" class="hover:text-sky-700">Problem</a>
+        <a href="#dane" class="hover:text-sky-700">Dane</a>
+        <a href="#wyniki" class="hover:text-sky-700">Wyniki</a>
+        <a href="#odtworzenie" class="hover:text-sky-700">Odtworzenie</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <section id="problem" class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+      <div class="rounded border border-slate-200 bg-white p-6 shadow-sm">
+        <p class="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-sky-700">Sekcja 1</p>
+        <h1 class="text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">PaySelectR w prostym języku</h1>
+        <p class="mt-4 max-w-3xl text-lg leading-8 text-slate-600">
+          Wybór operatora płatności to strategiczna decyzja, która wpływa na zyski oraz zaufanie Twoich klientów.
+          Pakiet PaySelectR zamienia niepewność w twarde dane, pomagając analitykom i właścicielom firm
+          wybrać optymalną bramkę płatniczą na podstawie wielu kryteriów jednocześnie.
+        </p>
+        <div class="mt-6 grid gap-3 sm:grid-cols-3">
+          <div class="rounded border border-slate-200 bg-slate-50 p-4">
+            <p class="text-xs font-semibold uppercase text-slate-500">Problem</p>
+            <p class="mt-2 text-sm text-slate-700">Wielokryterialna ocena bramek płatniczych pod kątem kosztów, technologii i jakości, mająca na celu minimalizację ryzyka biznesowego przy wyborze operatora.</p>
+          </div>
+          <div class="rounded border border-slate-200 bg-slate-50 p-4">
+            <p class="text-xs font-semibold uppercase text-slate-500">Użytkownik</p>
+            <p class="mt-2 text-sm text-slate-700">Właściciele eCommerce oraz analitycy finansowi szukający przejrzystej, matematycznej podstawy do podjęcia strategicznej decyzji o integralności płatności.</p>
+          </div>
+          <div class="rounded border border-slate-200 bg-slate-50 p-4">
+            <p class="text-xs font-semibold uppercase text-slate-500">Wynik</p>
+            <p class="mt-2 text-sm text-slate-700">Wskazanie optymalnego dostawcy (najbliższego rozwiązaniu idealnemu) wraz z potwierdzeniem odporności rankingu na zmianę metodologii obliczeń.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="rounded border border-slate-200 bg-white p-6 shadow-sm">
+        <h2 class="text-lg font-bold text-slate-950">Mapa projektu</h2>
+        <ul class="mt-4 space-y-3 text-sm leading-6 text-slate-600">
+          <li><strong class="text-slate-800">1.</strong> Środowisko i implementacja: instrukcja konfiguracji pakietu w języku R.</li>
+          <li><strong class="text-slate-800">2.</strong> Strukturyzacja danych: definicja modelu decyzyjnego i parametrów wejściowych.</li>
+          <li><strong class="text-slate-800">3.</strong> Fuzyfikacjia: transformacjia wartości ostrych na trójkątne liczby rozmyte.</li>
+          <li><strong class="text-slate-800">4.</strong> Ważenie obiektywno-subiektywne: wyznaczenie istotności kryteriów metodami BWM i Entropii.</li>
+          <li><strong class="text-slate-800">5.</strong> Rekomendacji końcowa: wyniki algorytmu Fuzzy TOPSIS oraz weryfikacji stabilności (Meta-ranking).</li>
+        </ul>
+      </aside>
+    </section>
+
+    <section id="dane" class="mt-10 grid gap-6 lg:grid-cols-2">
+      <div class="rounded border border-slate-200 bg-white p-6 shadow-sm">
+        <p class="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-sky-700">Sekcja 2</p>
+        <h2 class="text-2xl font-bold text-slate-950">Dane wejściowe</h2>
+        <p class="mt-3 text-sm leading-6 text-slate-600">
+          Sprawdź, jak wyglądają dane wejściowe dla analizowanych systemów płatności.
+          W poniższym zestawieniu porównujemy cztery popularne rozwiązania pod kątem
+          kosztów oraz parametrów technicznych. Dane zostały przygotowane przy użyciu
+          procedury generowania danych (DGP), która symuluje rzeczywiste warunki rynkowe.
+          Dzięki temu możemy przetestować, jak algorytmy MCDA reagują na zróżnicowane oferty operatorów.
+        </p>
+        <div class="mt-5 overflow-x-auto">
+          <table class="w-full min-w-[560px] text-left text-sm">
+            <thead class="border-y border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
+              <tr>
+                <th class="px-4 py-3">Alternatywa</th>
+                <th class="px-4 py-3">Bezpieczeństwo (max)</th>
+                <th class="px-4 py-3">Prowizje (min)</th>
+                <th class="px-4 py-3">Łatwość integracji (max)</th>
+                <th class="px-4 py-3">Zasięg międzynarodowy</th>
+                <th class="px-4 py-3">Typ</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr><td class="px-4 py-3 font-medium">PayPal</td><td class="px-4 py-3">8.5</td><td class="px-4 py-3">2.9%</td><td class="px-4 py-3">9.0</td><td class="px-4 py-3">Międzynarodowy</td><td class="px-4 py-3">Portfel elektroniczny</td></tr>
+              <tr><td class="px-4 py-3 font-medium">Przelewy24</td><td class="px-4 py-3">8.0</td><td class="px-4 py-3">1.9%</td><td class="px-4 py-3">7.5</td><td class="px-4 py-3">Krajowy</td><td class="px-4 py-3">Bramka Płatnicza</td></tr>
+              <tr><td class="px-4 py-3 font-medium">Stripe</td><td class="px-4 py-3">9.2</td><td class="px-4 py-3">1.4%</td><td class="px-4 py-3">9.5</td><td class="px-4 py-3">Międzynarodowy</td><td class="px-4 py-3">Agregator płatności</td></tr>
+              <tr><td class="px-4 py-3 font-medium">BLIK</td><td class="px-4 py-3">8.5</td><td class="px-4 py-3">0.0%</td><td class="px-4 py-3">6.5</td><td class="px-4 py-3">Krajowy</td><td class="px-4 py-3">System mobilny</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-8 border-t border-slate-100 pt-6">
+          <p class="text-sm font-bold text-slate-900 mb uppercase tracking-wider">Przygotowanie modelu w R:</p>
+          <p class="text-slate-600 text-sm mb-4">
+            Po wczytaniu powyższych danych, definiujemy strukturę modelu za pomocą dedykowanej składni.
+            Pozwala to na automatyczne przypisanie kryteriów do grup: <strong>Koszty</strong>, <strong>Techniczne</strong> oraz&nbsp;<strong>Jakość</strong>.
+          </p>
+          <div class="rounded-lg bg-slate-900 p-5 text-sky-300 font-mono text-sm shadow-inner overflow-x-auto">
+            <pre>
+# Definicja grup kryteriów
+model_syntax <- "
+  Koszty_Finansowe =~ prowizje
+  Techniczne       =~ integracja_latwosc + implementacja_latwosc
+  Jakosc_Uslugi    =~ szybkosc_platnosci + bezpieczenstwo + obsluga_klienta + zasieg_miedzynarodowy + akceptacja_transakcji
+"
+
+# Tworzenie macierzy decyzyjnej z surowych danych
+model <- przygotuj_dane_mcda(dane_surowe, syntax = model_syntax)
+            </pre>
+            </div>
+        </div>
+      </div>
+
+      <div class="rounded border border-slate-200 bg-white p-6 shadow-sm">
+        <p class="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-sky-700">Sekcja 3</p>
+        <h2 class="text-2xl font-bold text-slate-950">Rozmywanie danych</h2>
+        <p class="mt-3 text-sm leading-6 text-slate-600">
+          Kolejnym krokiem po zdefiniowaniu struktury modelu jest transformacja wartości do postaci liczb rozmytych.
+          Dzięki temu eliminujemy problem „sztywnych granic” i lepiej oddajemy niepewność rynkową.
+          W pakiecie PaySelectR każda ocena x jest reprezentowana jako trójkąt
+          <code class="rounded bg-slate-100 px-1 py-0.5">(l, m, u)</code>, co pozwala na uzyskanie rankingu odpornego na drobne wahania danych.
+        </p>
+        <div class="mt-5 rounded border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+          <p><strong>Proste wyjaśnienie:</strong> jeśli oceniamy bezpieczeństwo na 7, to pakiet pamięta, że realna ocena może być trochę niższa albo trochę wyższa.</p>
+          <p class="mt-2 font-mono text-xs">TFN = (x - 1, x, x + 1), ograniczone do skali 1-9</p>
+          <p class="mt-2 font-mono text-xs">wynik ostry = (l + 4m + u) / 6</p>
+        </div>
+        <div class="chart-box mt-5">
+          <canvas id="templateFuzzyChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-10 grid gap-6 lg:grid-cols-2">
+      <div class="rounded border border-slate-200 bg-white p-6 shadow-sm">
+        <p class="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-sky-700">Sekcja 4</p>
+        <h2 class="text-2xl font-bold text-slate-950">Wagi kryteriów (BWM i Entropia)</h2>
+        <p class="mt-3 text-sm leading-6 text-slate-600">
+          W systemie PaySelectR wagi nie są przypadkowe. Łączymy dwa podejścia:
+        <ul class="mt-4 space-y-2 text-sm text-slate-600">
+          <li class="flex items-start">
+            <span class="mr-2 text-sky-500">•</span>
+            <span><strong>Metoda BWM:</strong> Zgodnie z naszą analizą, najważniejszym kryterium (Best) jest Bezpieczeństwo, natomiast najmniej istotnym (Worst) są Prowizje. Pozwala to promować stabilnych operatorów.</span>
+          </li>
+          <li class="flex items-start">
+            <span class="mr-2 text-sky-500">•</span>
+            <span><strong>Metoda Entropii:</strong> System dodatkowo bada, jak bardzo oferty różnią się między sobą. Jeśli wszyscy dostawcy oferują podobne bezpieczeństwo, algorytm automatycznie skoryguje wagi, by skupić się na cechach, które faktycznie ich różnią (np. na integracji).</span>
+          </li>
+        </ul>
+        </p>
+        <div class="chart-box mt-5">
+          <canvas id="templateWeightsChart"></canvas>
+        </div>
+      </div>
+
+      <div id="wyniki" class="rounded border border-slate-200 bg-white p-6 shadow-sm">
+        <p class="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-sky-700">Sekcja 5</p>
+        <h2 class="text-2xl font-bold text-slate-950">Ranking główny i meta-ranking</h2>
+        <p class="mt-3 text-sm leading-6 text-slate-600">
+          Główną metodą w pakiecie jest Fuzzy TOPSIS.
+          To zaawansowany algorytm, który ocenia każdą bramkę płatniczą na podstawie jej dystansu od tzw. „rozwiązania idealnego”.
+          System oblicza dwa parametry: D+ (jak blisko jesteśmy ideału) oraz D- (jak daleko jesteśmy od najgorszej możliwej opcji).
+          Ostateczny wynik, czyli współczynnik CC (Closeness Coefficient), wskazuje zwycięzcę - im wyższa wartość (bliższa 1.0), tym lepiej oferta pasuje do wymagań.
+        </p>
+        <div class="my-6 flex justify-center">
+          <img src="man/figures/README-topsis_example-1.png" alt="Ranking Fuzzy TOPSIS" class="rounded-lg shadow-md border border-slate-200 max-w-full h-auto">
+        </div>
+        <p class="mt-3 text-sm leading-6 text-slate-600">
+          Dodatkowo, pakiet PaySelectR przeprowadza Meta-ranking. Jest to proces weryfikacji, w którym porównujemy wyniki TOPSIS
+          z innymi metodami. Dzięki temu mamy pewność, że wskazany lider jest stabilny statystycznie,.
+          a wybór bramki płatniczej nie jest dziełem przypadku, lecz wynikiem matematycznej zgody między wieloma algorytmami MCDA.
+        </p>
+        <div class="mt-6 overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+          <table class="w-full text-left text-sm border-collapse">
+            <thead>
+            <tr class="bg-slate-50 border-b border-slate-200">
+              <th class="px-4 py-3 font-bold text-slate-700">Alternatywa</th>
+              <th class="px-4 py-3 font-bold text-slate-700 text-center">R_VIKOR</th>
+              <th class="px-4 py-3 font-bold text-sky-700 text-center bg-sky-50/30">R_TOPSIS</th>
+              <th class="px-4 py-3 font-bold text-slate-700 text-center">R_WASPAS</th>
+              <th class="px-4 py-3 font-bold text-slate-700 text-center">R_MOORA</th>
+              <th class="px-4 py-3 font-bold text-slate-700 text-center">R_PROMETHEE</th>
+            </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="px-4 py-3 font-bold text-slate-900">Przelewy24</td>
+              <td class="px-4 py-3 text-center text-slate-600">1</td>
+              <td class="px-4 py-3 text-center font-bold text-sky-700 bg-sky-50/30">1</td>
+              <td class="px-4 py-3 text-center text-slate-600">1</td>
+              <td class="px-4 py-3 text-center text-slate-600">1</td>
+              <td class="px-4 py-3 text-center text-slate-600">1</td>
+            </tr>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="px-4 py-3 font-medium text-slate-900">Przelew_Bezposredni</td>
+              <td class="px-4 py-3 text-center text-slate-600">2</td>
+              <td class="px-4 py-3 text-center font-medium text-sky-600 bg-sky-50/30">3</td>
+              <td class="px-4 py-3 text-center text-slate-600">2</td>
+              <td class="px-4 py-3 text-center text-slate-600">2</td>
+              <td class="px-4 py-3 text-center text-slate-600">2</td>
+            </tr>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="px-4 py-3 font-medium text-slate-900">BLIK</td>
+              <td class="px-4 py-3 text-center text-slate-600">3</td>
+              <td class="px-4 py-3 text-center font-medium text-sky-600 bg-sky-50/30">2</td>
+              <td class="px-4 py-3 text-center text-slate-600">3</td>
+              <td class="px-4 py-3 text-center text-slate-600">3</td>
+              <td class="px-4 py-3 text-center text-slate-600">5</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-3 text-[11px] text-slate-400 italic">
+          Tabela meta-rankingu generowana automatycznie przez pakiet PaySelectR w celu weryfikacji stabilności wyboru.
+        </p>
+        <div class="mt-5 grid gap-3 sm:grid-cols-2">
+          <div class="rounded border border-emerald-200 bg-emerald-50 p-4">
+            <p class="text-xs font-semibold uppercase text-emerald-700">Najlepsza alternatywa</p>
+            <p class="mt-2 text-2xl font-bold text-emerald-900">Przelewy24</p>
+          </div>
+          <div class="rounded border border-sky-200 bg-sky-50 p-4">
+            <p class="text-xs font-semibold uppercase text-sky-700">Czy ranking jest stabilny?</p>
+            <p class="mt-2 text-2xl font-bold text-sky-900">Tak</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="odtworzenie" class="mt-10 rounded border border-slate-200 bg-white p-6 shadow-sm">
+      <p class="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-sky-700">Sekcja 6</p>
+      <h2 class="text-2xl font-bold text-slate-950">Jak odtworzyć analizę</h2>
+      <p class="mt-3 text-sm leading-6 text-slate-600">
+        Poniższy fragment kodu umożliwia pełną weryfikację obliczeń oraz samodzielne odtworzenie wyników rankingu w środowisku R.
+      </p>
+      <pre class="mt-5 overflow-x-auto rounded bg-slate-950 p-5 text-sm leading-6 text-slate-100"><code># instalacja
+devtools::install_github("dontdothatb/PaySelectR")
+library([PaySelectR])
+
+# dane i analiza
+data("pay_select_dane_surowe")
+macierz <- przygotuj_dane_mcda(dane = pay_select_dane_surowe, skladnia = skladnia, kolumna_alternatyw = "Alternatywa")
+res_topsis <- rozmyty_topsis(macierz_decyzyjna = macierz, typy_kryteriow = c("min", "max", "max"), wagi = wagi_ent)
+plot(res_topsis)
+tabela_apa(res_topsis)</code></pre>
+    </section>
+  </main>
+
+
+
+  <script>
+    const baseGrid = { color: '#e5e7eb' };
+    new Chart(document.getElementById('templateFuzzyChart'), {
+      type: 'line',
+      data: {
+        datasets: [{
+          label: 'Przynależność',
+          data: [{x: 5, y: 0}, {x: 6, y: 0}, {x: 7, y: 1}, {x: 8, y: 0}, {x: 9, y: 0}],
+          borderColor: '#0284c7',
+          backgroundColor: 'rgba(2, 132, 199, 0.14)',
+          fill: true,
+          tension: 0,
+          pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { type: 'linear', min: 3.5, max: 8.5, grid: baseGrid, title: { display: true, text: 'Ocena' } },
+          y: { min: 0, max: 1.1, grid: baseGrid, title: { display: true, text: 'Stopień przynależności' } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('templateWeightsChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Bezpieczeństwo', 'Prowizje', 'Łatwość integracji', 'Zasięg międzynarodowy'],
+        datasets: [{
+          label: 'Waga kryterium',
+          data: [0.26, 0.04, 0.11, 0.11],
+          backgroundColor: ['#0369a1', '#94a3b8', '#0f766e', '#64748b'],
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, grid: baseGrid }, x: { grid: { display: false } } }
+      }
+    });
+  </script>
+</body>
+</html>
