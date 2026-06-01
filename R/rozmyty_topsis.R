@@ -67,8 +67,13 @@ rozmyty_topsis <- function(macierz_decyzyjna, typy_kryteriow, wagi = NULL,
   skalar_D_poz <- rowMeans(d_poz_rozmyte)
   skalar_D_neg <- rowMeans(d_neg_rozmyte)
 
+  nazwy_alt <- rownames(macierz_decyzyjna)
+
+  if(is.null(nazwy_alt))
+    nazwy_alt <- paste0("A", seq_len(nrow(macierz_decyzyjna)))
+
   ramka_wynikow <- data.frame(
-    Alternatywa = 1:nrow(macierz_decyzyjna),
+    Alternatywa = nazwy_alt,
     D_plus = skalar_D_poz,
     D_minus = skalar_D_neg,
     Wynik = wynik_def,

@@ -52,7 +52,7 @@ plot.rozmyty_vikor_wynik <- function(x, ...) {
              hjust=0, vjust=1, size=3, fontface="italic", color="#B71C1C") +
 
     geom_point(aes(size = Rozmiar, fill = Wydajnosc), shape = 21, color = "black", alpha = 0.8) +
-    geom_text_repel(aes(label = paste0("Alt ", Alternatywa)), box.padding = 0.5) +
+    geom_text_repel(aes(label = Alternatywa), box.padding = 0.5) +
 
     scale_x_continuous(expand = expansion(mult = 0.2)) +
 
@@ -93,7 +93,7 @@ plot.rozmyty_topsis_wynik <- function(x, ...) {
                size = 2.5, color = "grey30", label.size = 0, alpha = 0.7) +
 
     geom_point(aes(size = Rozmiar, fill = Wynik), shape = 21, color = "black", alpha = 0.9) +
-    geom_text_repel(aes(label = paste0("Alt ", Alternatywa)), box.padding = 0.6) +
+    geom_text_repel(aes(label = Alternatywa), box.padding = 0.6) +
 
     annotate("point", x = cel_x, y = cel_y, shape=18, size=6, color="#FFD700") +
     annotate("text", x = cel_x, y = cel_y, label="IDEAŁ", vjust=2, size=3.5, fontface="bold") +
@@ -128,7 +128,7 @@ plot.rozmyty_waspas_wynik <- function(x, ...) {
     geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "grey50") +
 
     geom_point(aes(size = Wynik^3, fill = Spojnosc), shape = 21, color = "black", alpha = 0.8) +
-    geom_text_repel(aes(label = paste0("Alt ", Alternatywa)), box.padding = 0.5) +
+    geom_text_repel(aes(label = Alternatywa), box.padding = 0.5) +
 
     labs(
       title = "Mapa Spójności WASPAS",
@@ -153,7 +153,7 @@ plot.rozmyty_multimoora_wynik <- function(x, ...) {
     annotate("rect", xmin = median(df$RS_Wynik), xmax = Inf, ymin = -Inf, ymax = median(df$RP_Wynik),
              fill = "#E8F5E9", alpha = 0.5) +
     geom_point(aes(size = Sila, fill = as.factor(Ranking_MM)), shape = 21, color = "black") +
-    geom_text_repel(aes(label = paste0("Alt ", Alternatywa))) +
+    geom_text_repel(aes(label = Alternatywa)) +
     .motyw_mcda() +
     labs(title = "Mapa MULTIMOORA", x = "System Ilorazowy (Max)", y = "Punkt Odniesienia (Min)")
 }
@@ -163,7 +163,7 @@ plot.rozmyty_multimoora_wynik <- function(x, ...) {
 plot.rozmyty_promethee_wynik <- function(x, ...) {
   df <- x$wyniki
   df <- df[order(df$Phi_Net), ]
-  df$Alt <- factor(paste0("Alt ", df$Alternatywa), levels = paste0("Alt ", df$Alternatywa))
+  df$Alt <- factor(df$Alternatywa, levels = df$Alternatywa)
 
   ggplot(df, aes(x = Alt, y = Phi_Net)) +
     geom_segment(aes(xend = Alt, y = 0, yend = Phi_Net), color = "grey") +

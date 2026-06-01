@@ -58,8 +58,13 @@ rozmyty_waspas <- function(macierz_decyzyjna, typy_kryteriow, lambda = 0.5, wagi
   def_wpm <- rowSums(WPM_rozmyte) / 3
   Q_wartosc <- lambda * def_wsm + (1 - lambda) * def_wpm
 
+  nazwy_alt <- rownames(macierz_decyzyjna)
+
+  if(is.null(nazwy_alt))
+    nazwy_alt <- paste0("A", seq_len(nrow(macierz_decyzyjna)))
+
   ramka_wynikow <- data.frame(
-    Alternatywa = 1:nrow(macierz_decyzyjna),
+    Alternatywa = nazwy_alt,
     WSM = def_wsm,
     WPM = def_wpm,
     Wynik = Q_wartosc,

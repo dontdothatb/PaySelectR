@@ -74,8 +74,13 @@ rozmyty_vikor <- function(macierz_decyzyjna, typy_kryteriow, v = 0.5, wagi = NUL
   def_R <- (R_rozmyte[,1] + 2*R_rozmyte[,2] + R_rozmyte[,3]) / 4
   def_Q <- (Q_rozmyte[,1] + 2*Q_rozmyte[,2] + Q_rozmyte[,3]) / 4
 
+  nazwy_alt <- rownames(macierz_decyzyjna)
+
+  if(is.null(nazwy_alt))
+    nazwy_alt <- paste0("A", seq_len(nrow(macierz_decyzyjna)))
+
   ramka_wynikow <- data.frame(
-    Alternatywa = 1:nrow(macierz_decyzyjna),
+    Alternatywa = nazwy_alt,
     Def_S = def_S,
     Def_R = def_R,
     Def_Q = def_Q,
