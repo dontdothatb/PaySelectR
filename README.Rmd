@@ -59,17 +59,15 @@ macierz <- przygotuj_dane_mcda(
   kolumna_alternatyw = "Alternatywa" 
 )
 
-# 3. Wyznacz wagi metodą Entropii
-wagi_ent <- oblicz_wagi_entropii(macierz)
-
-# 4. Oblicz ranking metodą Fuzzy TOPSIS
+# 3. Oblicz ranking metodą Fuzzy TOPSIS
 res_topsis <- rozmyty_topsis(
   macierz_decyzyjna = macierz, 
   typy_kryteriow = c("min", "max", "max"), 
-  wagi = wagi_ent
+  bwm_najlepsze = c(8,3,1),
+  bwm_najgorsze = c(1,4,8)
 )
 
-# 5. Wyświetl wyniki rankingu
+# 4. Wyświetl wyniki rankingu
 summary(res_topsis)
 
 
@@ -89,7 +87,8 @@ W pakiecie `PaySelectR` metoda ta została zaimplementowana w logice rozmytej, c
 res_topsis <- rozmyty_topsis(
   macierz_decyzyjna = macierz, 
   typy_kryteriow = c("min", "max", "max"), 
-  wagi = wagi_ent
+  bwm_najlepsze = c(8,3,1),
+  bwm_najgorsze = c(1,4,8)
 )
 
 # Wykres rankingu TOPSIS - ocena bliskości do ideału
@@ -116,7 +115,8 @@ Metoda VIKOR skupia się na znalezieniu rozwiązania najbliższego ideałowi, al
 res_vikor <- rozmyty_vikor(
   macierz_decyzyjna = macierz, 
   typy_kryteriow = c("min", "max", "max"), 
-  wagi = wagi_ent
+  bwm_najlepsze = c(8,3,1),
+  bwm_najgorsze = c(1,4,8)
 )
 
 # Wykres rankingu VIKOR - mapa kompromisu
@@ -143,8 +143,8 @@ ranking_top <- ranking_final[order(ranking_final$Meta_Agregacja), ]
 
 # Wyświetlenie tabeli w dokumencie
 knitr::kable(
-  head(ranking_top, 3), 
-  caption = "Tabela 1: Top 3 systemy płatności według rankingu konsensusu"
+  ranking_top, 
+  caption = "Tabela 1: Pełny ranking systemów płatności według rankingu konsensusu"
 )
 ```
 

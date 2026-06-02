@@ -75,17 +75,16 @@ macierz <- przygotuj_dane_mcda(
   kolumna_alternatyw = "Alternatywa" 
 )
 
-# 3. Wyznacz wagi metodą Entropii
-wagi_ent <- oblicz_wagi_entropii(macierz)
-
-# 4. Oblicz ranking metodą Fuzzy TOPSIS
+# 3. Oblicz ranking metodą Fuzzy TOPSIS
 res_topsis <- rozmyty_topsis(
   macierz_decyzyjna = macierz, 
   typy_kryteriow = c("min", "max", "max"), 
-  wagi = wagi_ent
+  bwm_najlepsze = c(8,3,1),
+  bwm_najgorsze = c(1,4,8)
 )
+#> Obliczanie wag metodą BWM...
 
-# 5. Wyświetl wyniki rankingu
+# 4. Wyświetl wyniki rankingu
 summary(res_topsis)
 #>        Length Class      Mode     
 #> wyniki 5      data.frame list     
@@ -114,8 +113,10 @@ rozmytej, co pozwala na uwzględnienie niepewności ocen eksperckich.
 res_topsis <- rozmyty_topsis(
   macierz_decyzyjna = macierz, 
   typy_kryteriow = c("min", "max", "max"), 
-  wagi = wagi_ent
+  bwm_najlepsze = c(8,3,1),
+  bwm_najgorsze = c(1,4,8)
 )
+#> Obliczanie wag metodą BWM...
 
 # Wykres rankingu TOPSIS - ocena bliskości do ideału
 plot(res_topsis)
@@ -151,8 +152,10 @@ płatniczej o najbardziej zrównoważonych parametrach.
 res_vikor <- rozmyty_vikor(
   macierz_decyzyjna = macierz, 
   typy_kryteriow = c("min", "max", "max"), 
-  wagi = wagi_ent
+  bwm_najlepsze = c(8,3,1),
+  bwm_najgorsze = c(1,4,8)
 )
+#> Obliczanie wag metodą BWM...
 
 # Wykres rankingu VIKOR - mapa kompromisu
 plot(res_vikor)
@@ -186,8 +189,8 @@ ranking_top <- ranking_final[order(ranking_final$Meta_Agregacja), ]
 
 # Wyświetlenie tabeli w dokumencie
 knitr::kable(
-  head(ranking_top, 3), 
-  caption = "Tabela 1: Top 3 systemy płatności według rankingu konsensusu"
+  ranking_top, 
+  caption = "Tabela 1: Pełny ranking systemów płatności według rankingu konsensusu"
 )
 ```
 
@@ -196,8 +199,11 @@ knitr::kable(
 | 5 | Przelewy24 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 |
 | 4 | Przelew_Bezposredni | 2 | 3 | 2 | 2 | 2 | 2 | 2 | 2 |
 | 1 | BLIK | 3 | 2 | 3 | 3 | 5 | 3 | 3 | 3 |
+| 6 | Stripe | 4 | 4 | 5 | 4 | 4 | 4 | 4 | 4 |
+| 2 | PayPal | 5 | 5 | 4 | 5 | 3 | 5 | 5 | 5 |
+| 3 | PayU | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 |
 
-Tabela 1: Top 3 systemy płatności według rankingu konsensusu
+Tabela 1: Pełny ranking systemów płatności według rankingu konsensusu
 
 ## Dokumentacja
 
