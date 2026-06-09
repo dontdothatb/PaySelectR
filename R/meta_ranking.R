@@ -56,7 +56,7 @@ rozmyty_meta_ranking <- function(macierz_decyzyjna, typy_kryteriow, wagi = NULL,
     parametry_preferencji <- data.frame(
       Type = rep("linear", liczba_kryteriow),
       q = rep(0, liczba_kryteriow),
-      p = rep(2, liczba_kryteriow),
+      p = rep(0.3, liczba_kryteriow),
       s = rep(NA, liczba_kryteriow),
       stringsAsFactors = FALSE
     )
@@ -110,8 +110,14 @@ rozmyty_meta_ranking <- function(macierz_decyzyjna, typy_kryteriow, wagi = NULL,
     for(i in 1:n_alt) rank_ra[top_list[i]] <- i
   }
 
+  nazwy_alt <- rownames(macierz_decyzyjna)
+
+  if (is.null(nazwy_alt)) {
+    nazwy_alt <- paste0("A", seq_len(nrow(macierz_decyzyjna)))
+  }
+
   comp_df <- data.frame(
-    Alternatywa = rownames(macierz_decyzyjna),
+    Alternatywa = nazwy_alt,
     R_VIKOR = macierz_rankingow[,1],
     R_TOPSIS = macierz_rankingow[,2],
     R_WASPAS = macierz_rankingow[,3],

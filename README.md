@@ -36,6 +36,8 @@ Oto podstawowy przykład użycia pakietu przy użyciu metody Fuzzy TOPSIS.
 
 ``` r
 library(PaySelectR)
+devtools::load_all()
+#> ℹ Loading PaySelectR
 
 # 1. Wczytaj dane
 data("pay_select_dane_surowe")
@@ -198,9 +200,9 @@ knitr::kable(
 |:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|
 | 5 | Przelewy24 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 |
 | 4 | Przelew_Bezposredni | 2 | 3 | 2 | 2 | 2 | 2 | 2 | 2 |
-| 1 | BLIK | 3 | 2 | 3 | 3 | 5 | 3 | 3 | 3 |
-| 6 | Stripe | 4 | 4 | 5 | 4 | 4 | 4 | 4 | 4 |
-| 2 | PayPal | 5 | 5 | 4 | 5 | 3 | 5 | 5 | 5 |
+| 1 | BLIK | 3 | 2 | 3 | 3 | 4 | 3 | 3 | 3 |
+| 6 | Stripe | 4 | 4 | 5 | 4 | 5 | 5 | 4 | 4 |
+| 2 | PayPal | 5 | 5 | 4 | 5 | 3 | 4 | 5 | 5 |
 | 3 | PayU | 6 | 6 | 6 | 6 | 6 | 6 | 6 | 6 |
 
 Tabela 1: Pełny ranking systemów płatności według rankingu konsensusu

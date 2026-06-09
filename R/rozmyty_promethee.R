@@ -72,8 +72,13 @@ rozmyty_promethee <- function(macierz_decyzyjna, parametry_preferencji, wagi = N
   Phi_minus <- colSums(Pi_total) / (n_alt - 1)
   Phi_net <- Phi_plus - Phi_minus
 
+  nazwy_alt <- rownames(macierz_decyzyjna)
+
+  if(is.null(nazwy_alt))
+    nazwy_alt <- paste0("A", seq_len(n_alt))
+
   wyniki <- data.frame(
-    Alternatywa = 1:n_alt,
+    Alternatywa = nazwy_alt,
     Phi_Plus = Phi_plus,
     Phi_Minus = Phi_minus,
     Phi_Net = Phi_net,

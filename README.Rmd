@@ -41,6 +41,7 @@ devtools::install_github("dontdothatb/PaySelectR")
 Oto podstawowy przykład użycia pakietu przy użyciu metody Fuzzy TOPSIS.
 ```{r example}
 library(PaySelectR)
+devtools::load_all()
 
 # 1. Wczytaj dane
 data("pay_select_dane_surowe")

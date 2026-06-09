@@ -136,8 +136,14 @@ rozmyty_multimoora <- function(macierz_decyzyjna, typy_kryteriow, wagi = NULL,
 
   finalny_ranking <- .teoria_dominacji_multimoora(rank_rs, rank_rp, rank_fmf)
 
+
+  nazwy_alt <- rownames(macierz_decyzyjna)
+
+  if(is.null(nazwy_alt))
+    nazwy_alt <- paste0("A", seq_len(nrow(macierz_decyzyjna)))
+
   wyniki_df <- data.frame(
-    Alternatywa = rownames(macierz_decyzyjna),
+    Alternatywa = nazwy_alt,
     RS_Wynik = def_rs,
     RS_Ranking = rank_rs,
     RP_Wynik = def_rp,
