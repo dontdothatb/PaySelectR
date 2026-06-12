@@ -1,7 +1,7 @@
 Package: PaySelectR
 Type: Package
-Title: Wielokryterialna Analiza Decyzyjna w Środowisku Rozmytym z BWM
-Version: 0.1.0
+Title: Pakiet R do optymalizacji wyboru systemów płatności internetowych na podstawie opinii ekspertów
+Version: 1.0.0
 Author: c(
     person(
       "Zuzanna", "Moskała",
@@ -9,10 +9,10 @@ Author: c(
       role = c("aut", "cre")
     )
   )
-Maintainer: Twoje Imię Nazwisko <twoj.email@student.uj.edu.pl>
-Description: Pakiet implementuje metody MCDA (TOPSIS, VIKOR, WASPAS) w środowisku
-    rozmytym (Fuzzy Logic). Zawiera moduł automatycznego przetwarzania danych ankietowych
-    na liczby rozmyte oraz solver dla metody Best-Worst Method (BWM) do wyznaczania wag kryteriów.
+Maintainer: Zuzanna Moskała <zuzanna.moskala@student.uj.edu.pl>
+Description: Pakiet implementuje metody MCDA (TOPSIS, VIKOR, WASPAS, MULTIOMOORA, PROMETHEE II) 
+    w środowisku rozmytym (Fuzzy Logic). Umożliwia transformację danych na liczby rozmyte, 
+    wyznaczanie wag kryteriów oraz agregację wyników za pomocą procedury meta-rankingu.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
